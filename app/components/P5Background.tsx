@@ -6,11 +6,21 @@ import p5 from "p5";
 
 export default function P5Background() {
   const router = useRouter();
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const sketch = (p) => {
-      const balls = []; // Changed from let to const
+    const sketch = (p: p5) => {
+      const balls: {
+        x: number;
+        y: number;
+        size: number;
+        speedX: number;
+        speedY: number;
+        label: string;
+        href: string;
+        selected: boolean;
+      }[] = [];
+
       const numBalls = 10;
       const items = [
         { label: "Home", href: "/" },
@@ -27,13 +37,11 @@ export default function P5Background() {
 
       p.setup = () => {
         const canvas = p.createCanvas(p.windowWidth, p.windowHeight);
+        canvas.parent(containerRef.current!);
         canvas.style("position", "absolute");
         canvas.style("top", "0");
         canvas.style("left", "0");
         canvas.style("z-index", "-10");
-        p.windowResized = () => {
-          p.resizeCanvas(p.windowWidth, p.windowHeight);
-        };
 
         for (let i = 0; i < numBalls; i++) {
           balls.push({
@@ -50,12 +58,14 @@ export default function P5Background() {
       };
 
       p.draw = () => {
+        p.clear();
         p.background(240, 240, 245, 150);
-        for (const ball of balls) {
-          // Changed from let to const
+
+        balls.forEach((ball) => {
           ball.x += ball.speedX;
           ball.y += ball.speedY;
 
+          // Bounce logic
           if (ball.x < ball.size / 2 || ball.x > p.width - ball.size / 2) {
             ball.speedX *= -1;
           }
@@ -63,43 +73,54 @@ export default function P5Background() {
             ball.speedY *= -1;
           }
 
-          if (ball.selected) {
-            p.fill(200, 0, 0, 200);
-          } else {
-            p.fill(255, 0, 0, 200);
-          }
+          // Check hover
+          const isHovered =
+            p.dist(p.mouseX, p.mouseY, ball.x, ball.y) < ball.size / 2;
+
+          p.fill(isHovered ? 0 : 200);
+          p.stroke(100);
           p.ellipse(ball.x, ball.y, ball.size);
 
-          p.fill(255, 255, 255);
+          // Label
+          p.fill(50);
+          p.noStroke();
           p.textAlign(p.CENTER, p.CENTER);
           p.text(ball.label, ball.x, ball.y);
-        }
+
+          // Cursor
+          if (isHovered) {
+            p.cursor(p.HAND);
+          }
+        });
       };
 
       p.mousePressed = () => {
         for (const ball of balls) {
-          // Changed from let to const
-          const d = p.dist(p.mouseX, p.mouseY, ball.x, ball.y); // Changed from let to const
-          if (d < ball.size / 2) {
-            balls.forEach((b) => (b.selected = false));
-            ball.selected = true;
+          const isHovered =
+            p.dist(p.mouseX, p.mouseY, ball.x, ball.y) < ball.size / 2;
+          if (isHovered) {
             router.push(ball.href);
+            break;
           }
         }
       };
+
+      p.windowResized = () => {
+        p.resizeCanvas(p.windowWidth, p.windowHeight);
+      };
     };
 
-    const p5Instance = new p5(sketch, containerRef.current);
+    const canvas = new p5(sketch);
 
     return () => {
-      p5Instance.remove();
+      canvas.remove();
     };
   }, [router]);
 
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-full -z-10 pointer-events-auto"
+      className="w-full h-full fixed top-0 left-0 -z-10"
     />
   );
 }

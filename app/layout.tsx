@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
         <Nav />
         <main className="p-4 relative z-10 bg-white/80">{children}</main>
         <footer className="p-4 bg-gray-200 text-center relative z-10">
-          <p>© 2025 My First Next App</p>
+          <p>© 2025 My Next App</p>
         </footer>
       </body>
     </html>
