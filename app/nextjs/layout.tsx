@@ -1,12 +1,12 @@
-"use client";
-
+import { ReactNode } from "react"; // Import ReactNode
 import NextJSBackgroundWrapper from "../components/NextJSBackgroundWrapper"; // New wrapper
 
-export default function NextJSLayout({ children }) {
+export default function NextJSLayout({ children }: { children: ReactNode }) {
+  // Type definition for children
   return (
     <div>
       <NextJSBackgroundWrapper />
-      <main className="p-4 relative z-10 bg-white/80">{children}</main>
+      {children}
     </div>
   );
 }
