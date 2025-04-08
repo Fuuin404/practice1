@@ -10,7 +10,7 @@ export default function P5Background() {
 
   useEffect(() => {
     const sketch = (p) => {
-      let balls = [];
+      const balls = []; // Changed from let to const
       const numBalls = 10;
       const items = [
         { label: "Home", href: "/" },
@@ -40,8 +40,8 @@ export default function P5Background() {
             x: p.random(50, p.width - 50),
             y: p.random(50, p.height - 50),
             size: 70,
-            speedX: p.random(-2, 2), // Random horizontal speed
-            speedY: p.random(-2, 2), // Random vertical speed
+            speedX: p.random(-2, 2),
+            speedY: p.random(-2, 2),
             label: items[i].label,
             href: items[i].href,
             selected: false,
@@ -51,12 +51,11 @@ export default function P5Background() {
 
       p.draw = () => {
         p.background(240, 240, 245, 150);
-        for (let ball of balls) {
-          // Update position
+        for (const ball of balls) {
+          // Changed from let to const
           ball.x += ball.speedX;
           ball.y += ball.speedY;
 
-          // Bounce off walls
           if (ball.x < ball.size / 2 || ball.x > p.width - ball.size / 2) {
             ball.speedX *= -1;
           }
@@ -65,21 +64,22 @@ export default function P5Background() {
           }
 
           if (ball.selected) {
-            p.fill(200, 0, 0, 200); // Darker red when selected
+            p.fill(200, 0, 0, 200);
           } else {
-            p.fill(255, 0, 0, 200); // Bright red when unselected
+            p.fill(255, 0, 0, 200);
           }
           p.ellipse(ball.x, ball.y, ball.size);
 
-          p.fill(255, 255, 255); // White text
+          p.fill(255, 255, 255);
           p.textAlign(p.CENTER, p.CENTER);
           p.text(ball.label, ball.x, ball.y);
         }
       };
 
       p.mousePressed = () => {
-        for (let ball of balls) {
-          let d = p.dist(p.mouseX, p.mouseY, ball.x, ball.y);
+        for (const ball of balls) {
+          // Changed from let to const
+          const d = p.dist(p.mouseX, p.mouseY, ball.x, ball.y); // Changed from let to const
           if (d < ball.size / 2) {
             balls.forEach((b) => (b.selected = false));
             ball.selected = true;

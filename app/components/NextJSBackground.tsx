@@ -10,7 +10,7 @@ export default function NextJSBackground() {
 
   useEffect(() => {
     const sketch = (p) => {
-      let shapes = [];
+      const shapes = []; // Changed from let to const
       const numShapes = 3;
       const items = [
         { label: "Routing", href: "/nextjs/routing", shape: "circle" },
@@ -44,7 +44,8 @@ export default function NextJSBackground() {
 
       p.draw = () => {
         p.background(240, 240, 245, 150);
-        for (let shape of shapes) {
+        for (const shape of shapes) {
+          // Changed from let to const
           shape.x += shape.speedX;
           shape.y += shape.speedY;
 
@@ -80,8 +81,9 @@ export default function NextJSBackground() {
       };
 
       p.mousePressed = () => {
-        for (let shape of shapes) {
-          let d = p.dist(p.mouseX, p.mouseY, shape.x, shape.y);
+        for (const shape of shapes) {
+          // Changed from let to const
+          const d = p.dist(p.mouseX, p.mouseY, shape.x, shape.y); // Changed from let to const
           if (d < shape.size / 2) {
             shapes.forEach((s) => (s.selected = false));
             shape.selected = true;
